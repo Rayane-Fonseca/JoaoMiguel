@@ -49,38 +49,6 @@
             font-family: 'Space Mono', monospace;
         }
 
-        /* ---------- BOTÃO DE MÚSICA ---------- */
-        .music-btn {
-            position: fixed;
-            bottom: 20px;
-            right: 20px;
-            z-index: 10000;
-            background: var(--gold);
-            color: var(--ink);
-            border: 3px solid var(--deep-blue);
-            border-radius: 50px;
-            padding: 12px 20px;
-            font-family: 'Baloo 2', sans-serif;
-            font-weight: 800;
-            font-size: 1rem;
-            cursor: pointer;
-            box-shadow: 0 8px 20px rgba(0, 0, 0, .3);
-            display: flex;
-            align-items: center;
-            gap: 8px;
-            transition: transform .2s ease, background-color .2s ease;
-        }
-
-        .music-btn:hover {
-            transform: scale(1.05);
-            background: var(--gold-2);
-        }
-
-        .music-btn.playing {
-            background: var(--coral);
-            color: #fff;
-        }
-
         /* ---------- confetti canvas ---------- */
         #confetti-canvas {
             position: fixed;
@@ -143,6 +111,7 @@
             padding: .5em 1em;
             border-radius: 999px;
             border: 1px solid rgba(255, 255, 255, .25);
+            text-align: center;
         }
 
         .age-badge {
@@ -589,19 +558,181 @@
             font-size: .9rem;
             margin: 0;
         }
+
+        /* =========================================================
+           RESPONSIVO — NOTEBOOK / TELAS GRANDES
+           ========================================================= */
+        @media (min-width: 1400px) {
+            section {
+                max-width: 1200px;
+                padding: 6.5rem 4vw;
+            }
+        }
+
+        /* =========================================================
+           RESPONSIVO — TABLET
+           ========================================================= */
+        @media (max-width: 900px) {
+            section {
+                padding: 4.5rem 6vw;
+            }
+
+            .album-grid {
+                grid-template-columns: repeat(auto-fill, minmax(130px, 1fr));
+                gap: .9rem;
+            }
+        }
+
+        /* =========================================================
+           RESPONSIVO — CELULAR
+           ========================================================= */
+        @media (max-width: 640px) {
+            .hero {
+                padding: 5vh 6vw 6vh;
+                min-height: 100svh;
+            }
+
+            .float-emoji {
+                font-size: 1.6rem;
+            }
+
+            .eyebrow {
+                font-size: .62rem;
+                letter-spacing: .18em;
+                padding: .45em .9em;
+            }
+
+            .age-badge {
+                margin: .9rem 0 .3rem;
+            }
+
+            .hero h1 {
+                margin: .15rem 0 .25rem;
+            }
+
+            .scroll-hint {
+                margin-top: 1.6rem;
+            }
+
+            section {
+                padding: 3.5rem 6vw;
+            }
+
+            .section-head {
+                margin: 0 auto 2rem;
+            }
+
+            .photo-wrap {
+                gap: 1.6rem;
+            }
+
+            .polaroid {
+                width: min(84vw, 260px);
+                padding: .8rem .8rem 2.8rem;
+            }
+
+            .msg-box {
+                padding: 1.8rem 1.4rem;
+                margin-top: 2.4rem;
+            }
+
+            .msg-box p {
+                font-size: .98rem;
+            }
+
+            .album-grid {
+                grid-template-columns: repeat(auto-fill, minmax(105px, 1fr));
+                gap: .7rem;
+            }
+
+            .card-front .cap {
+                font-size: .74rem;
+            }
+
+            .card-front .role {
+                font-size: .54rem;
+            }
+
+            .card-front .num {
+                font-size: .6rem;
+            }
+
+            .candles {
+                gap: 1rem;
+                margin: 2rem 0 1.2rem;
+            }
+
+            .candle {
+                font-size: 2.1rem;
+            }
+
+            .cake-status {
+                font-size: 1rem;
+            }
+
+            .wish-reveal {
+                padding: 1.2rem 1.3rem;
+                font-size: .95rem;
+            }
+
+            footer {
+                padding: 3rem 6vw 3.4rem;
+            }
+        }
+
+        /* =========================================================
+           RESPONSIVO — CELULAR PEQUENO
+           ========================================================= */
+        @media (max-width: 380px) {
+            .album-grid {
+                grid-template-columns: repeat(auto-fill, minmax(92px, 1fr));
+                gap: .6rem;
+            }
+
+            .polaroid {
+                width: 84vw;
+            }
+
+            .candle {
+                font-size: 1.85rem;
+            }
+
+            .candles {
+                gap: .8rem;
+            }
+        }
+
+        /* =========================================================
+           RESPONSIVO — TELAS BAIXAS (celular deitado)
+           ========================================================= */
+        @media (max-height: 480px) and (orientation: landscape) {
+            .hero {
+                min-height: auto;
+                padding: 3rem 6vw;
+            }
+
+            .age-badge {
+                font-size: clamp(3.5rem, 14vw, 6rem);
+            }
+
+            .scroll-hint {
+                display: none;
+            }
+        }
+
+        /* Evita que imagens/qualquer elemento estourem a largura da tela */
+        img {
+            max-width: 100%;
+            height: auto;
+        }
     </style>
 </head>
 
 <body>
 
-    <!-- Botão de controle de áudio -->
-    <button id="toggleMusic" class="music-btn">
-        <span id="musicIcon">🎵</span> <span id="musicText">Tocar Música</span>
-    </button>
-
     <!-- Elemento de áudio -->
     <audio id="bgAudio" loop preload="auto">
-        <source src="assets/xuxa-parabens.mp3" type="audio/mpeg">>
+        <source src="assets/xuxa-parabens.mp3" type="audio/mpeg">
     </audio>
 
     <canvas id="confetti-canvas"></canvas>
@@ -679,25 +810,8 @@
     </footer>
 
     <script>
-        /* ---------------- Controle de Áudio via Botão ---------------- */
+        /* ---------------- Áudio ---------------- */
         const audio = document.getElementById('bgAudio');
-        const musicBtn = document.getElementById('toggleMusic');
-        const musicIcon = document.getElementById('musicIcon');
-        const musicText = document.getElementById('musicText');
-
-        musicBtn.addEventListener('click', () => {
-            if (audio.paused) {
-                audio.play();
-                musicBtn.classList.add('playing');
-                musicIcon.textContent = '🔊';
-                musicText.textContent = 'Pausar Música';
-            } else {
-                audio.pause();
-                musicBtn.classList.remove('playing');
-                musicIcon.textContent = '🎵';
-                musicText.textContent = 'Tocar Música';
-            }
-        });
 
         /* ---------------- Confetti ---------------- */
         const canvas = document.getElementById('confetti-canvas');
@@ -816,6 +930,7 @@
         const wishReveal = document.getElementById('wishReveal');
         const TOTAL_CANDLES = 9;
         let litCount = TOTAL_CANDLES;
+        let musicStarted = false;
 
         for (let i = 0; i < TOTAL_CANDLES; i++) {
             const btn = document.createElement('button');
@@ -824,6 +939,10 @@
             btn.addEventListener('click', () => {
                 if (btn.classList.contains('out')) return;
                 btn.classList.add('out');
+                if (!musicStarted) {
+                    musicStarted = true;
+                    audio.play().catch(() => {});
+                }
                 litCount--;
                 if (litCount > 0) {
                     cakeStatus.textContent = litCount + ' velinha' + (litCount > 1 ? 's' : '') + ' pra apagar ainda...';
